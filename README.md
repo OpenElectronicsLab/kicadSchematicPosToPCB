@@ -11,6 +11,12 @@ before starting on the board layout itself.  This script attempts to simplify
 this process by allowing you to move all of the components to the same place on
 the PCB layout sheet that they were on the schematic.
 
+Note that *there are still bugs* to be worked out, and this should be viewed as
+an *alpha* release.  It appeared to work on a smaller project I tried it on,
+but placed a small percentage of components in strange places when I tried it
+on a larger projects (probably because I'm misunderstanding some of the details
+of the pcb file format).
+
 Usage
 -----
 
