@@ -35,9 +35,9 @@ def applyPositionsToBoard(in_filename, out_filename, positions, onlyMoveIfAtOrig
     with open(in_filename, 'rt') as f:
         lines = f.readlines()
 
-    reModuleRef = re.compile(r'T0 .+"(\w+)"');
-    reModulePosition = re.compile(r"Po +(-?[0-9]+) +(-?[0-9]+) +(-?[0-9]+.+)");
-    reEndModule = re.compile(r"\$EndMODULE");
+    reModuleRef = re.compile(r'^\s+\(fp_text reference ([^ ]+).*')
+    reModulePosition = re.compile(r'^\s+\(at ([\-\.0-9]+) ([\-\.0-9]+)\)')
+    reEndModule = re.compile(r'^  \)')
     lastPositionLineNum = -1
     lastRef = 'missing ref'
 
@@ -58,8 +58,8 @@ def applyPositionsToBoard(in_filename, out_filename, positions, onlyMoveIfAtOrig
                         if not onlyMoveIfAtOrigin or (match.group(1) == "0" and
                                 match.group(2) == "0"):
                             newPos = positions[lastRef]
-                            lines[lastPositionLineNum] = "Po {0} {1} {2}".format(
-                                newPos[0], newPos[1], match.group(3)
+                            lines[lastPositionLineNum] = "    (at {0} {1})\n".format(
+                                newPos[0], newPos[1]
                                 )
 
     with open(out_filename, 'wt') as f:
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     positions = readPositionsFromSchematic(sch_filename)
 
     # scale the positions up by a factor of 10 to match the brd file defaults
-    schToBrdScale = 10
+    schToBrdScale = 0.01
     scaledPositions = dict(zip(positions.keys(),
         map(lambda x: (schToBrdScale*x[0], schToBrdScale*x[1]),
             positions.values())
